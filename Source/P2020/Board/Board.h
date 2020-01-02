@@ -40,6 +40,7 @@ public:
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
+	virtual void OnConstruction(const FTransform& Tranform) override;
 
 public:	
 	// Called every frame
@@ -55,7 +56,7 @@ private:
 	void initializeBoard();
 
 	TArray<FBoardTileDatatableRow> getBoardTiles();
-	ATile* spawnTile(FBoardTileDatatableRow& row);
+	ATile* spawnTile(int index, FBoardTileDatatableRow& row);
 
 	UWorld* world = nullptr;
 	FActorSpawnParameters tileSpawnParam;

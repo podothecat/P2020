@@ -2,6 +2,7 @@
 
 
 #include "Tile.h"
+#include "UObject/ConstructorHelpers.h"
 
 // Sets default values
 ATile::ATile()
@@ -12,10 +13,7 @@ ATile::ATile()
 	mesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Cube"));
 	static ConstructorHelpers::FObjectFinder<UStaticMesh>MeshAsset(TEXT("StaticMesh'/Engine/BasicShapes/Cube.Cube'"));
 	mesh->SetStaticMesh(MeshAsset.Object);
-	RootComponent = mesh;
-
 	mesh->SetMaterial(0, nullptr);
-
 }
 
 // Called when the game starts or when spawned

@@ -22,6 +22,11 @@ ABoard::ABoard()
 void ABoard::BeginPlay()
 {
 	Super::BeginPlay();
+}
+
+void ABoard::OnConstruction(const FTransform& Tranform)
+{
+	Super::OnConstruction(Tranform);
 	initializeBoard();
 }
 
@@ -47,16 +52,18 @@ TArray<FBoardTileDatatableRow> ABoard::getBoardTiles()
 	return boardTileArray;
 }
 
-ATile* ABoard::spawnTile(FBoardTileDatatableRow& row)
+ATile* ABoard::spawnTile(int index, FBoardTileDatatableRow& row)
 {
 	FVector location = FVector(
 		row.X * TileDistance,
 		row.Y * TileDistance,
 		row.Height * TileDistance / 3
 	);
-	FActorSpawnParameters param;
+	FActorSpawnParameters param(tileSpawnParam);
+	FString nameStr = FString(TEXT("Tile_")).Append(FString::FromInt(index));
+	param.Name = FName(*nameStr);
 
-	ATile* tile = GetWorld()->SpawnActor<ATile>();
+	ATile* tile = GetWorld()->SpawnActor<ATile>(param);
 	tile->SetTileType((ETileType)row.Type);
 	tile->SetActorLocation(location + GetActorLocation());
 
@@ -72,9 +79,11 @@ void ABoard::initializeBoard()
 	tiles.Empty();
 
 	TArray<FBoardTileDatatableRow> tilesFromData = getBoardTiles();
+	int index = 0;
 	for (FBoardTileDatatableRow row : tilesFromData)
 	{
-		tiles.Add(spawnTile(row));
+		tiles.Add(spawnTile(index, row));
+		index++;
 	}
 }
 
