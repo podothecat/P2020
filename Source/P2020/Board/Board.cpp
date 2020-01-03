@@ -1,4 +1,4 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+// Fill out your opyright notice in the Description page of Project Settings.
 
 
 #include "Board.h"
@@ -21,10 +21,17 @@ void ABoard::BeginPlay()
 	Super::BeginPlay();
 }
 
-void ABoard::OnConstruction(const FTransform& Tranform)
+void ABoard::PostEditChangeProperty(FPropertyChangedEvent& PropertyChangedEvent)
 {
-	Super::OnConstruction(Tranform);
-	initializeBoard();
+	//Get the name of the property that was changed  
+	FName PropertyName = (PropertyChangedEvent.Property != nullptr) ? PropertyChangedEvent.Property->GetFName() : NAME_None;
+	if (PropertyName == GET_MEMBER_NAME_CHECKED(ABoard, BoardTileDataTable))
+	{
+		isInitialized = false;
+		initializeBoard();
+	}
+
+	Super::PostEditChangeProperty(PropertyChangedEvent);
 }
 
 // Called every frame
@@ -37,6 +44,11 @@ TArray<FBoardTileDatatableRow> ABoard::getBoardTiles()
 {
 	TArray<FBoardTileDatatableRow> boardTileArray;
 	FString ContextString;
+	
+	if (BoardTileDataTable == nullptr) {
+		return TArray<FBoardTileDatatableRow>();
+	}
+
 	TArray<FName> rowNames = BoardTileDataTable->GetRowNames();
 	for (auto& rowName : rowNames)
 	{
@@ -57,18 +69,14 @@ ATile* ABoard::spawnTile(int index, FBoardTileDatatableRow& row)
 		row.Height * TileDistance / 3
 	);
 
-	FString nameStr = FString(TEXT("Tile_")).Append(FString::FromInt(index));
-	FActorSpawnParameters param;
-	param.Name = FName(*nameStr);
-	param.Owner = this;
-
-	UChildActorComponent* component = NewObject<UChildActorComponent>(this);
-	component->bEditableWhenInherited = true;
-	component->RegisterComponent();
-	component->SetChildActorClass(ATile::StaticClass());
-	component->CreateChildActor();
+	FString nameStr = FString(TEXT("Tile_") + FString::FromInt(index));
 	
-	ATile* tile = (ATile*)component->GetChildActor();
+	FActorSpawnParameters SpawnParams;
+	SpawnParams.Name = FName(*nameStr);
+	SpawnParams.Owner = this;
+
+	ATile* tile = GetWorld()->SpawnActor<ATile>(ATile::StaticClass(), SpawnParams);
+	tile->AttachToActor(this, FAttachmentTransformRules::KeepRelativeTransform);
 	tile->SetTileType((ETileType)row.Type);
 	tile->SetActorLocation(location + GetActorLocation());
 
@@ -77,14 +85,32 @@ ATile* ABoard::spawnTile(int index, FBoardTileDatatableRow& row)
 
 void ABoard::initializeBoard()
 {
-	if (!isInitialized) {
+	if (!isInitialized) 
+	{
+		for (ATile* tile : tiles)
+		{
+			tile->DetachFromActor(FDetachmentTransformRules::KeepRelativeTransform);
+			tile->Destroy();
+		}
+		tiles.Empty();
+
+
+		if (Debug) return;
 		TArray<FBoardTileDatatableRow> tilesFromData = getBoardTiles();
+		
+		if (tilesFromData.Num() < 1 )
+		{
+			return;
+		}
+
 		int index = 0;
 		for (FBoardTileDatatableRow row : tilesFromData)
 		{
-			spawnTile(index, row);
+			ATile* tile = spawnTile(index, row);
+			tiles.Add(tile);
 			index++;
 		}
+
 		isInitialized = true;
 	}
 }
