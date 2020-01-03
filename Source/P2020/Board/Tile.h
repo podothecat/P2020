@@ -43,6 +43,5 @@ public:
 private:
 	UStaticMeshComponent* mesh;
 	ETileType tileType;
-
 	void updateMaterialByTileType();
 };

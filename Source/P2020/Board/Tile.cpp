@@ -13,7 +13,6 @@ ATile::ATile()
 	mesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Cube"));
 	static ConstructorHelpers::FObjectFinder<UStaticMesh>MeshAsset(TEXT("StaticMesh'/Engine/BasicShapes/Cube.Cube'"));
 	mesh->SetStaticMesh(MeshAsset.Object);
-	mesh->SetMaterial(0, nullptr);
 }
 
 // Called when the game starts or when spawned
@@ -38,29 +37,32 @@ void ATile::SetTileType(ETileType type)
 
 void ATile::updateMaterialByTileType()
 {
+	FString assetPath = TEXT("MaterialInstanceConstant'/Game/Material/Mat_@TYPE@Tile.Mat_@TYPE@Tile'");
 	switch (tileType)
 	{
-	case ETileType::TE_Start:
-		break;
 	case ETileType::TE_Water:
+		assetPath = assetPath.Replace(TEXT("@TYPE@"), TEXT("Water"));
 		break;
 	case ETileType::TE_Fire:
+		assetPath = assetPath.Replace(TEXT("@TYPE@"), TEXT("Fire"));
 		break;
 	case ETileType::TE_Desert:
+		assetPath = assetPath.Replace(TEXT("@TYPE@"), TEXT("Desert"));
 		break;
 	case ETileType::TE_Forest:
+		assetPath = assetPath.Replace(TEXT("@TYPE@"), TEXT("Forest"));
 		break;
+	case ETileType::TE_Start:
 	case ETileType::TE_SouthCastle:
 	case ETileType::TE_NorthCastle:
 	case ETileType::TE_WestCastle:
 	case ETileType::TE_EastCastle:
-
+		assetPath = assetPath.Replace(TEXT("@TYPE@"), TEXT("Special"));
 		break;
 	}
 
-	// LoadObject(NULL, TEXT("/Game/"))
-
-	// static ConstructorHelpers::FObjectFinder<UMaterial>materialAsset(LOCTEXT("/Game/Material/Mat_", "DesertTile"));
+	UMaterialInterface* material = LoadObject<UMaterialInterface>(NULL, *assetPath);
+	mesh->SetMaterial(0, material);
 }
 
 

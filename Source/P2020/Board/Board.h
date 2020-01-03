@@ -40,7 +40,7 @@ public:
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
-	virtual void OnConstruction(const FTransform& Tranform) override;
+	virtual void PostEditChangeProperty(struct FPropertyChangedEvent& PropertyChangedEvent) override;
 
 public:	
 	// Called every frame
@@ -52,14 +52,14 @@ public:
 	UPROPERTY(EditAnywhere)
 		UDataTable* BoardTileDataTable = nullptr;
 
+	UPROPERTY(EditAnywhere)
+		bool Debug;
+
 private:
 	void initializeBoard();
-
 	TArray<FBoardTileDatatableRow> getBoardTiles();
 	ATile* spawnTile(int index, FBoardTileDatatableRow& row);
 
-	UWorld* world = nullptr;
-	FActorSpawnParameters tileSpawnParam;
-	TArray<ATile*> tiles;
-
+	TArray<ATile*> tiles = TArray<ATile*>();
+	bool isInitialized = false;
 };
