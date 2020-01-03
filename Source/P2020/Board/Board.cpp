@@ -13,9 +13,6 @@ ABoard::ABoard()
 	RootComponent = CreateDefaultSubobject<USceneComponent>(TEXT("Æ®·£½ºÆû"));
 	check(RootComponent);
 
-	world = GetWorld();
-	tileSpawnParam.Owner = this;
-
 }
 
 // Called when the game starts or when spawned
@@ -59,11 +56,19 @@ ATile* ABoard::spawnTile(int index, FBoardTileDatatableRow& row)
 		row.Y * TileDistance,
 		row.Height * TileDistance / 3
 	);
-	FActorSpawnParameters param(tileSpawnParam);
-	FString nameStr = FString(TEXT("Tile_")).Append(FString::FromInt(index));
-	param.Name = FName(*nameStr);
 
-	ATile* tile = GetWorld()->SpawnActor<ATile>(param);
+	FString nameStr = FString(TEXT("Tile_")).Append(FString::FromInt(index));
+	FActorSpawnParameters param;
+	param.Name = FName(*nameStr);
+	param.Owner = this;
+
+	UChildActorComponent* component = NewObject<UChildActorComponent>(this);
+	component->bEditableWhenInherited = true;
+	component->RegisterComponent();
+	component->SetChildActorClass(ATile::StaticClass());
+	component->CreateChildActor();
+	
+	ATile* tile = (ATile*)component->GetChildActor();
 	tile->SetTileType((ETileType)row.Type);
 	tile->SetActorLocation(location + GetActorLocation());
 
@@ -72,18 +77,15 @@ ATile* ABoard::spawnTile(int index, FBoardTileDatatableRow& row)
 
 void ABoard::initializeBoard()
 {
-	for (ATile* tile : tiles)
-	{
-		GetWorld()->DestroyActor(tile, true);
-	}
-	tiles.Empty();
-
-	TArray<FBoardTileDatatableRow> tilesFromData = getBoardTiles();
-	int index = 0;
-	for (FBoardTileDatatableRow row : tilesFromData)
-	{
-		tiles.Add(spawnTile(index, row));
-		index++;
+	if (!isInitialized) {
+		TArray<FBoardTileDatatableRow> tilesFromData = getBoardTiles();
+		int index = 0;
+		for (FBoardTileDatatableRow row : tilesFromData)
+		{
+			spawnTile(index, row);
+			index++;
+		}
+		isInitialized = true;
 	}
 }
 

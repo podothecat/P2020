@@ -57,9 +57,5 @@ private:
 
 	TArray<FBoardTileDatatableRow> getBoardTiles();
 	ATile* spawnTile(int index, FBoardTileDatatableRow& row);
-
-	UWorld* world = nullptr;
-	FActorSpawnParameters tileSpawnParam;
-	TArray<ATile*> tiles;
-
+	bool isInitialized = false;
 };

@@ -57,6 +57,8 @@ void ATile::updateMaterialByTileType()
 
 		break;
 	}
+	// UMaterialInterface* TestToRun = FindObject<UMaterialInterface>(TestsOuter, *TestName);
+	// GridTexture = LoadObject<UTexture2D>(NULL, TEXT("/Engine/EngineMaterials/DefaultWhiteGrid.DefaultWhiteGrid"), NULL, LOAD_None, NULL);
 
 	// LoadObject(NULL, TEXT("/Game/"))
 
