@@ -3,6 +3,7 @@
 
 #include "Board.h"
 #include "Engine/World.h"
+#include "Marker.h"
 
 // Sets default values
 ABoard::ABoard()
@@ -83,6 +84,37 @@ ATile* ABoard::spawnTile(int index, FBoardTileDatatableRow& row)
 	return tile;
 }
 
+void ABoard::spawnMarkers(FBoardTileDatatableRow& row)
+{
+	for (AMarker* marker : markers)
+	{
+		marker->DetachFromActor(FDetachmentTransformRules::KeepRelativeTransform);
+		marker->Destroy();
+	}
+	markers.Empty();
+
+	FVector location = FVector(
+		row.X * TileDistance,
+		row.Y * TileDistance,
+		row.Height * TileDistance / 3 + 110.f
+	);
+
+	for (unsigned int i = 0; i < MarkerCount; ++i)
+	{
+		FString nameStr = FString(TEXT("Marker_") + FString::FromInt(i));
+
+		FActorSpawnParameters SpawnParams;
+		SpawnParams.Name = FName(*nameStr);
+		SpawnParams.Owner = this;
+		SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
+
+		AMarker* marker = GetWorld()->SpawnActor<AMarker>(AMarker::StaticClass(), SpawnParams);
+		marker->AttachToActor(this, FAttachmentTransformRules::KeepRelativeTransform);
+		marker->SetActorLocation(location + GetActorLocation());
+		markers.Add(marker);
+	}
+}
+
 void ABoard::initializeBoard()
 {
 	if (!isInitialized) 
@@ -104,9 +136,16 @@ void ABoard::initializeBoard()
 		}
 
 		int index = 0;
+		bool isMarkerSpawned = false;
 		for (FBoardTileDatatableRow row : tilesFromData)
 		{
 			ATile* tile = spawnTile(index, row);
+			if (!isMarkerSpawned && static_cast<ETileType>(row.Type) == ETileType::TE_Start)
+			{
+				isMarkerSpawned = true;
+				spawnMarkers(row);
+			}
+
 			tiles.Add(tile);
 			index++;
 		}

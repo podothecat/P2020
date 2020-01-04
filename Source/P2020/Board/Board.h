@@ -8,6 +8,8 @@
 #include "Engine/DataTable.h"
 #include "Board.generated.h"
 
+class AMarker;
+
 USTRUCT(BlueprintType)
 struct FBoardTileDatatableRow : public FTableRowBase
 {
@@ -55,11 +57,16 @@ public:
 	UPROPERTY(EditAnywhere)
 		bool Debug;
 
+	UPROPERTY(EditAnywhere)
+		unsigned int MarkerCount = 1;
+
 private:
 	void initializeBoard();
 	TArray<FBoardTileDatatableRow> getBoardTiles();
 	ATile* spawnTile(int index, FBoardTileDatatableRow& row);
+	void spawnMarkers(FBoardTileDatatableRow& row);
 
 	TArray<ATile*> tiles = TArray<ATile*>();
+	TArray<AMarker*> markers = TArray<AMarker*>();
 	bool isInitialized = false;
 };
