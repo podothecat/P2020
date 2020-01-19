@@ -8,6 +8,8 @@
 #include "RoundGameMode.h"
 #include "RoundGameState.h"
 
+#define COLLISION_PANCAMERA		ECC_GameTraceChannel3
+
 // DECLARE_LOG_CATEGORY_EXTERN(LogGame, Log, All);
 
 #if PLATFORM_ANDROID

@@ -1,6 +1,17 @@
 #include "P2020.h"
 #include "RoundGameState.h"
 #include "P2020Marker.h"
+#include "P2020Tile.h"
+#include "UObject/ConstructorHelpers.h"
+#include "BoardGenerator.h"
+
+void ARoundGameState::initializeMap() 
+{
+	UWorld* world = GetWorld();
+	// _startTile = world->SpawnActor<AP2020Tile>();
+	// json data 읽어서 _startTile부터 Tree 구성
+	BoardGenerator b = BoardGenerator(TEXT("Stage1"));
+}
 
 void ARoundGameState::InitiateRound(int goalMana, int initialMana, TArray<FP2020Player>& players)
 {
@@ -8,9 +19,13 @@ void ARoundGameState::InitiateRound(int goalMana, int initialMana, TArray<FP2020
 	_initialMana = initialMana;
 	_players = players;
 
+	UWorld* world = GetWorld();
+
+	// 맵 생성
+	initializeMap();
+
 	// 플레이어가 전부 연결 될 때까지 기다린다
 	int index = 0;
-	UWorld* world = GetWorld();
 	for (FP2020Player player : _players)
 	{
 		// 마커 스폰

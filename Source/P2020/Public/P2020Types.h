@@ -43,7 +43,6 @@ enum class LevelState : uint8
 	Finished,
 };
 
-/*
 USTRUCT(BlueprintType)
 struct FBoardTileDatatableRow : public FTableRowBase
 {
@@ -62,4 +61,3 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Board")
 		uint8 Type;
 };
-*/

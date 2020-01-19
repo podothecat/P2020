@@ -2,11 +2,14 @@
 
 #include "P2020.h"
 #include "P2020PlayerController.h"
+#include "P2020SpectatorPawn.h"
 
 ARoundGameMode::ARoundGameMode() 
 {
 	GameStateClass = ARoundGameState::StaticClass();
 	PlayerControllerClass = AP2020PlayerController::StaticClass();
+	SpectatorClass = AP2020SpectatorPawn::StaticClass();
+	DefaultPawnClass = AP2020SpectatorPawn::StaticClass();
 }
 
 void ARoundGameMode::InitGameState()

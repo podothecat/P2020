@@ -22,10 +22,14 @@ public:
 private:
     bool isGameFinished();
     FP2020Player& getNextPlayer();
+    void initializeMap();
+    // TArray<FBoardTileDatatableRow> getBoardTiles();
+    // ATile* spawnTile(int index, FBoardTileDatatableRow& row);s
 private:
     int _initialMana;
     int _goalMana;
     TArray<FP2020Player> _players;
+    AActor* _startTile;
 
     FP2020Player _currentTurnPlayer;
 };
