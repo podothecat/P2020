@@ -9,6 +9,9 @@ AP2020Tile::AP2020Tile()
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
+	mesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Cube"));
+	static ConstructorHelpers::FObjectFinder<UStaticMesh>MeshAsset(TEXT("StaticMesh'/Engine/BasicShapes/Cube.Cube'"));
+	mesh->SetStaticMesh(MeshAsset.Object);
 }
 
 // Called when the game starts or when spawned

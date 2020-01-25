@@ -29,6 +29,7 @@ private:
 	int _x;
 	int _y;
 	ETileType _type;
+	UStaticMeshComponent* mesh;
 
 	// tile owner;
 	// tile creature;

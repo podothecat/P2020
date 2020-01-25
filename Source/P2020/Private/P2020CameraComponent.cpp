@@ -13,18 +13,6 @@ UP2020CameraComponent::UP2020CameraComponent(const FObjectInitializer& ObjectIni
 	MaxZoomLevel = 1.0f;
 	MiniMapBoundsLimit = 0.8f;
 	StartSwipeCoords.Set(0.0f, 0.0f, 0.0f);
-
-	TArray<FVector> Points;
-	FVector const CamLocation = GetComponentLocation();
-	float DistanceFromGround = CamLocation.Z - 0; //;GroundLevel;
-	// float Alpha = FMath::DegreesToRadians(GetCaptureComponent2D()->FOVAngle / 2);
-	//float MaxVisibleDistance = (DistanceFromGround / FMath::Cos(Alpha)) * FMath::Sin(Alpha);
-	float MaxVisibleDistance = (DistanceFromGround / FMath::Cos(1.0f)) * FMath::Sin(1.0f);
-
-	Points.Add(FVector(CamLocation.X + MaxVisibleDistance, CamLocation.Y + MaxVisibleDistance, 0.0f));
-	Points.Add(FVector(CamLocation.X - MaxVisibleDistance, CamLocation.Y - MaxVisibleDistance, 0.0f));
-
-	WorldBounds = FBox(Points);
 }
 
 void UP2020CameraComponent::OnZoomIn()
@@ -227,34 +215,40 @@ void UP2020CameraComponent::UpdateCameraBounds(const APlayerController* InPlayer
 		const FVector FrustumRayDir = RotQuat.RotateVector(FrustumRay2DDir);
 
 		// collect 3 world bounds' points and matching frustum rays (bottom left, top left, bottom right)
-		
-		if (WorldBounds.GetSize() != FVector::ZeroVector)
+
+		ARoundGameState const* const MyGameState = GetWorld()->GetGameState<ARoundGameState>();
+		if (MyGameState)
 		{
-			const FVector WorldBoundPoints[] = {
-				FVector(WorldBounds.Min.X, WorldBounds.Min.Y, WorldBounds.Max.Z),
-				FVector(WorldBounds.Min.X, WorldBounds.Max.Y, WorldBounds.Max.Z),
-				FVector(WorldBounds.Max.X, WorldBounds.Min.Y, WorldBounds.Max.Z)
-			};
-			const FVector FrustumRays[] = {
-				FVector(FrustumRayDir.X,  FrustumRayDir.Y, FrustumRayDir.Z),
-				FVector(FrustumRayDir.X, -FrustumRayDir.Y, FrustumRayDir.Z),
-				FVector(-FrustumRayDir.X,  FrustumRayDir.Y, FrustumRayDir.Z)
-			};
+			FBox const& WorldBounds = MyGameState->WorldBounds;
 
-			// get camera plane for intersections
-			const FPlane CameraPlane = FPlane(InPlayerController->GetFocalLocation(), FVector::UpVector);
+			if (WorldBounds.GetSize() != FVector::ZeroVector)
+			{
+				const FVector WorldBoundPoints[] = {
+					FVector(WorldBounds.Min.X, WorldBounds.Min.Y, WorldBounds.Max.Z),
+					FVector(WorldBounds.Min.X, WorldBounds.Max.Y, WorldBounds.Max.Z),
+					FVector(WorldBounds.Max.X, WorldBounds.Min.Y, WorldBounds.Max.Z)
+				};
+				const FVector FrustumRays[] = {
+					FVector(FrustumRayDir.X,  FrustumRayDir.Y, FrustumRayDir.Z),
+					FVector(FrustumRayDir.X, -FrustumRayDir.Y, FrustumRayDir.Z),
+					FVector(-FrustumRayDir.X,  FrustumRayDir.Y, FrustumRayDir.Z)
+				};
 
-			// get matching points on camera plane
-			const FVector CameraPlanePoints[3] = {
-				IntersectRayWithPlane(WorldBoundPoints[0], FrustumRays[0], CameraPlane) * 0.8f, // * MiniMapBoundsLimit,
-				IntersectRayWithPlane(WorldBoundPoints[1], FrustumRays[1], CameraPlane) * 0.8f, // * MiniMapBoundsLimit,
-				IntersectRayWithPlane(WorldBoundPoints[2], FrustumRays[2], CameraPlane) * 0.8f, // * MiniMapBoundsLimit
-			};
+				// get camera plane for intersections
+				const FPlane CameraPlane = FPlane(InPlayerController->GetFocalLocation(), FVector::UpVector);
 
-			// create new bounds
-			CameraMovementBounds = FBox(CameraPlanePoints, 3);
-			// UE_LOG()
-			CameraMovementViewportSize = CurrentViewportSize;
+				// get matching points on camera plane
+				const FVector CameraPlanePoints[3] = {
+					IntersectRayWithPlane(WorldBoundPoints[0], FrustumRays[0], CameraPlane) * 0.8f, // * MiniMapBoundsLimit,
+					IntersectRayWithPlane(WorldBoundPoints[1], FrustumRays[1], CameraPlane) * 0.8f, // * MiniMapBoundsLimit,
+					IntersectRayWithPlane(WorldBoundPoints[2], FrustumRays[2], CameraPlane) * 0.8f, // * MiniMapBoundsLimit
+				};
+
+				// create new bounds
+				CameraMovementBounds = FBox(CameraPlanePoints, 3);
+				// UE_LOG()
+				CameraMovementViewportSize = CurrentViewportSize;
+			}
 		}
 	}
 }

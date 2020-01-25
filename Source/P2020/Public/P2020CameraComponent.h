@@ -16,9 +16,6 @@ class P2020_API UP2020CameraComponent : public UCameraComponent
 
 public:
 
-
-	FBox WorldBounds;
-
 	// Begin UCameraComponent interface
 
 	virtual void GetCameraView(float DeltaTime, FMinimalViewInfo& DesiredView) override;
