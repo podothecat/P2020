@@ -55,13 +55,15 @@ public:
     void OnRoleDice();
 
     FBox WorldBounds;
+
+	AP2020Tile* GetTile(int idx) const;
 private:
     bool isGameFinished();
     FP2020Player& getNextPlayer();
     void initializeMap();
     // TArray<FBoardTileDatatableRow> getBoardTiles();
     AP2020Tile* spawnTile(int index, FBoardTileDatatableRow& row);
-	AP2020Tile* spawnTile(int index, FTileTableRow& row);
+	AP2020Tile* SpawnTile(int index, FTileTableRow& row);
 private:
     int _initialMana;
     int _goalMana;
@@ -72,6 +74,7 @@ private:
 
 	TArray<FTileTableRow> _currentMapData;
 	TArray<UMaterialInstance*> _tileMaterialInstances;
+	TArray<AP2020Tile*> _tiles;
 
     const int tileDistance = 500;
 };

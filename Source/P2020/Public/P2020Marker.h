@@ -3,11 +3,11 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "GameFramework/Actor.h"
+#include "GameFramework/Character.h"
 #include "P2020Marker.generated.h"
 
 UCLASS()
-class P2020_API AP2020Marker : public AActor
+class P2020_API AP2020Marker : public ACharacter
 {
 	GENERATED_BODY()
 	
@@ -15,6 +15,7 @@ public:
 	// Sets default values for this actor's properties
 	AP2020Marker();
 	void Initialize(AActor* beginTile);
+	void MoveForward();
 
 protected:
 	// Called when the game starts or when spawned
@@ -25,5 +26,7 @@ public:
 	virtual void Tick(float DeltaTime) override;
 
 private:
-	AActor* _tile;
+	AP2020Tile* _tile;
+	int _tileIdx;
+	UStaticMeshComponent* _mesh;
 };

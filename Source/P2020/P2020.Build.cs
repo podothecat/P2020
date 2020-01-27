@@ -17,8 +17,9 @@ public class P2020 : ModuleRules
 			"InputCore", 
             "UMG",
 			"Json", 
-			"JsonUtilities" 
-		});
+			"JsonUtilities" ,
+            "AIModule"
+        });
 
 		PrivateDependencyModuleNames.AddRange(new string[] {  });
 

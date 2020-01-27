@@ -71,7 +71,7 @@ void ARoundGameState::initializeMap()
 		if (row)
 		{
 			_currentMapData.Add(*row);
-			spawnTile(i++, *row);
+			_tiles.Add(SpawnTile(i++, *row));
 
 			if (row->x > maxX) {
 				maxX = row->x;
@@ -160,7 +160,7 @@ void ARoundGameState::InitiateRound(int goalMana, int initialMana, TArray<FP2020
 	{
 		// 마커 스폰
 		AP2020Marker* marker = world->SpawnActor<AP2020Marker>();
-		marker->Initialize(nullptr);
+		marker->Initialize(_startTile);
 		player.SetMarker(marker);
 	}
 }
@@ -201,7 +201,7 @@ bool ARoundGameState::isGameFinished()
 	return false;
 }
 
-AP2020Tile* ARoundGameState::spawnTile(int index, FTileTableRow& row)
+AP2020Tile* ARoundGameState::SpawnTile(int index, FTileTableRow& row)
 {
 	FVector location = FVector(
 		row.x * tileDistance,
@@ -222,6 +222,11 @@ AP2020Tile* ARoundGameState::spawnTile(int index, FTileTableRow& row)
 	tile->SetActorScale3D(FVector(4, 4, 4));
 
 	tile->SetMaterial(_tileMaterialInstances[static_cast<uint8>(row.tileType)]);
+
+	if (row.index == 0)
+	{
+		_startTile = tile;
+	}
 
 	return tile;
 }
@@ -248,4 +253,9 @@ AP2020Tile* ARoundGameState::spawnTile(int index, FBoardTileDatatableRow& row)
 	tile->SetActorScale3D(FVector(4, 4, 4));
 
 	return tile;
+}
+
+AP2020Tile* ARoundGameState::GetTile(int idx) const
+{
+	return _tiles[idx];
 }
