@@ -14,6 +14,8 @@ AP2020PlayerController::AP2020PlayerController(const FObjectInitializer& ObjectI
 	PrimaryActorTick.bCanEverTick = true;
 	SetHidden(false);
 	bShowMouseCursor = true;
+	bEnableClickEvents = true;
+	bEnableMouseOverEvents = true;
 }
 
 void AP2020PlayerController::SetupInputComponent()

@@ -21,9 +21,6 @@ AP2020Marker::AP2020Marker()
 void AP2020Marker::BeginPlay()
 {
 	Super::BeginPlay();
-
-	//For Test
-	MoveForward();
 }
 
 // Called every frame
@@ -59,6 +56,9 @@ void AP2020Marker::MoveForward()
 	_tile = state->GetTile(_tileIdx);
 
 	//동작을 안한다. 담에보는걸로
-	Cast<AAIController>(GetController())->MoveToActor(_tile);
+	//Cast<AAIController>(GetController())->MoveToActor(_tile);
+	FVector pos = _tile->GetActorLocation();
+	pos.Z += 250.f;
+	RootComponent->SetWorldLocation(pos);
 
 }
