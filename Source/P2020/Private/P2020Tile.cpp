@@ -1,7 +1,8 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
-#include "P2020.h"
 #include "P2020Tile.h"
+#include "P2020.h"
+
 
 // Sets default values
 AP2020Tile::AP2020Tile()
@@ -28,3 +29,7 @@ void AP2020Tile::Tick(float DeltaTime)
 
 }
 
+void AP2020Tile::SetMaterial(UMaterialInstance* mat)
+{
+	mesh->SetMaterial(0, mat);
+}
