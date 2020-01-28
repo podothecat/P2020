@@ -1,7 +1,7 @@
 #include "RoundGameState.h"
 #include "P2020.h"
-#include "P2020Marker.h"
 #include "P2020Tile.h"
+#include "P2020Marker.h"
 #include "UObject/ConstructorHelpers.h"
 
 ARoundGameState::ARoundGameState()
@@ -162,6 +162,7 @@ void ARoundGameState::InitiateRound(int goalMana, int initialMana, TArray<FP2020
 		AP2020Marker* marker = world->SpawnActor<AP2020Marker>();
 		marker->Initialize(_startTile);
 		player.SetMarker(marker);
+		_markers.Add(marker);
 	}
 }
 
@@ -258,4 +259,14 @@ AP2020Tile* ARoundGameState::spawnTile(int index, FBoardTileDatatableRow& row)
 AP2020Tile* ARoundGameState::GetTile(int idx) const
 {
 	return _tiles[idx];
+}
+
+void ARoundGameState::OnRoleDice()
+{
+	int value = FMath::RandHelper(4);
+	for (int i = 0; i < value + 1; ++i)
+	{
+		_markers[0]->MoveForward();
+	}
+	UE_LOG(LogTemp, Log, TEXT("DiceRoll %d"), value + 1);
 }

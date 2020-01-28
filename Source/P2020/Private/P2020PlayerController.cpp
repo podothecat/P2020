@@ -16,11 +16,13 @@ AP2020PlayerController::AP2020PlayerController(const FObjectInitializer& ObjectI
 	bShowMouseCursor = true;
 	bEnableClickEvents = true;
 	bEnableMouseOverEvents = true;
+	//DefaultClickTraceChannel = ECollisionChannel::ECC_Pawn;
 }
 
 void AP2020PlayerController::SetupInputComponent()
 {
 	Super::SetupInputComponent();
+
 	/*
 	InputHandler = NewObject<UP2020Input>(this);
 
@@ -39,6 +41,7 @@ void AP2020PlayerController::SetupInputComponent()
 	ToggleInGameMenuBinding.bExecuteWhenPaused = true;
 	*/
 }
+
 /*
 void AP2020PlayerController::GetAudioListenerPosition(FVector& OutLocation, FVector& OutFrontDir, FVector& OutRightDir)
 {

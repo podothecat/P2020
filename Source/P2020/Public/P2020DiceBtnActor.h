@@ -16,6 +16,7 @@ public:
 	AP2020DiceBtnActor();
 	
 	virtual void NotifyActorOnClicked(FKey PressedButton = EKeys::LeftMouseButton) override;
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
@@ -23,9 +24,6 @@ protected:
 private:
 	UFUNCTION()
 	void OnMouseOverBegin(UPrimitiveComponent* TouchedComponent);
-	
-	UFUNCTION()
-		void OnMouseClicked(UPrimitiveComponent* TouchedComponent);// , FKey ButtonPressed);
 	
 public:	
 	// Called every frame

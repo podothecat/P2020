@@ -47,6 +47,7 @@ public:
 	void OnPinchStarted(const FVector2D& AnchorPosition1, const FVector2D& AnchorPosition2, float DownTime);
 	void OnPinchUpdate(const FVector2D& ScreenPosition1, const FVector2D& ScreenPosition2, float DownTime);
 
+	//void OnMouseClick();
 	/** Toggles the ingame menu display. */
 	// void OnToggleInGameMenu();
 protected:

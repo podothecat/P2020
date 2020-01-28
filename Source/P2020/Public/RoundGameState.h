@@ -38,6 +38,7 @@ public:
 
 class AP2020Tile;
 class UMaterialInstance;
+class AP2020Marker;
 
 UCLASS()
 class P2020_API ARoundGameState : public AGameStateBase
@@ -68,6 +69,7 @@ private:
     int _initialMana;
     int _goalMana;
     TArray<FP2020Player> _players;
+	TArray<AP2020Marker*> _markers;
     AActor* _startTile;
 
     FP2020Player _currentTurnPlayer;

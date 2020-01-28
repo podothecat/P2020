@@ -6,6 +6,8 @@
 #include "GameFramework/Character.h"
 #include "P2020Marker.generated.h"
 
+class AP2020Tile;
+
 UCLASS()
 class P2020_API AP2020Marker : public ACharacter
 {

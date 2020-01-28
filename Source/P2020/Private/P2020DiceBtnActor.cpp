@@ -5,7 +5,8 @@
 #include "Components/StaticMeshComponent.h"
 #include "Engine/StaticMesh.h"
 #include "UObject/ConstructorHelpers.h"
-
+#include "P2020PlayerController.h"
+#include "RoundGameState.h"
 // Sets default values
 AP2020DiceBtnActor::AP2020DiceBtnActor()
 {
@@ -14,35 +15,28 @@ AP2020DiceBtnActor::AP2020DiceBtnActor()
 	static ConstructorHelpers::FObjectFinder<UStaticMesh> StaticMeshOb_Cube(TEXT("StaticMesh'/Engine/BasicShapes/Cube.Cube'"));
 	_mesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("RootComponent"));
 	_mesh->SetStaticMesh(StaticMeshOb_Cube.Object);
-	RootComponent = _mesh;
-	//_mesh->OnClicked.AddDynamic(this, &AP2020DiceBtnActor::OnClicked);
-	//OnClicked.
-	//OnClicked.AddDynamic(this, &AP2020DiceBtnActor::OnClicked);
+	_mesh->SetupAttachment(RootComponent);
 	_mesh->OnBeginCursorOver.AddDynamic(this, &AP2020DiceBtnActor::OnMouseOverBegin);
-	_mesh->OnClicked.AddDynamic(this, &AP2020DiceBtnActor::OnMouseClicked);
+	
 }
+
 
 void AP2020DiceBtnActor::OnMouseOverBegin(UPrimitiveComponent* TouchedComponent)
 {
 	UE_LOG(LogTemp, Log, TEXT("MouseOver"));
-	//_mesh->SetMaterial(0, );
 }
 
-void AP2020DiceBtnActor::OnMouseClicked(UPrimitiveComponent* TouchedComponent)// , FKey ButtonPressed)
-{
-	UE_LOG(LogTemp, Log, TEXT("MouseClick"));
-}
 void AP2020DiceBtnActor::NotifyActorOnClicked(FKey ButtonPressed)
 {
 	Super::NotifyActorOnClicked(ButtonPressed);
-
-	UE_LOG(LogTemp, Log, TEXT("MouseClick"));
+	Cast<ARoundGameState>(GetWorld()->GetGameState())->OnRoleDice();
 }
 
 // Called when the game starts or when spawned
 void AP2020DiceBtnActor::BeginPlay()
 {
 	Super::BeginPlay();
+	EnableInput(GetWorld()->GetFirstPlayerController());
 }
 
 // Called every frame
